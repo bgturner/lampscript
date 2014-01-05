@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# Installing LAMP for *buntu using apt-get is easy:
+#
+#   sudo apt-get install lamp-server^
+#
+# Now to prevent Apache and MySQL from auto starting. These steps are taken
+# from:
+#
+# http://www.techytalk.info/configure-mysql-not-to-start-at-boot-ubuntu-linux/
+#
+# 1. First remove Apache from startup
+#
+#   sudo update-rc.d -f apache2 remove
+#
+# 2. MySQL just a little more effort. Edit the mysql.conf file:
+#
+#   gksudo sublime /etc/init/mysql.conf
+#
+# And comment out any lines that have 'start on', for example:
+#
+#   start on (net-device-up
+#     and local-filesystems
+#     and runlevel [2345])
+#
+# Finally, to use this script make it executable, and move it to a universal
+# location:
+#
+# chmod +x lamp
+# sudo mv lamp /usr/bin/lamp
+#
+
+case "$1" in
+  start)
+    sudo service apache2 start
+    sudo service mysql start
+    ;;
+
+  stop)
+    sudo service apache2 stop
+    sudo service mysql stop
+    ;;
+
+  restart)
+    sudo service apache2 stop
+    sudo service mysql stop
+    sudo service apache2 start
+    sudo service mysql start
+    ;;
+
+  *)
+    echo $"Usage: $0 {start|stop|restart}"
+    exit 1
+esac
